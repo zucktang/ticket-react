@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import TicketForm from '../components/TicketForm';
 import { getTicket, updateTicket } from '../api/tickets';
 import { useParams } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
+
 
 const UpdateTicketPage = () => {
   const { id } = useParams();
@@ -19,7 +21,7 @@ const UpdateTicketPage = () => {
         console.error("Error fetching ticket:", error);
       }
     };
-
+    document.title = "Update Ticket"; 
     fetchTicket();
   }, [id]);
 
@@ -37,6 +39,11 @@ const UpdateTicketPage = () => {
   return (
     <div className="my-4">
       <h4 className="text-center">Update Ticket</h4>
+      {error && (
+        <Alert variant="danger" onClose={() => setError(null)} dismissible>
+            {error}
+        </Alert>
+        )}
       {ticketData && <TicketForm onSubmit={handleFormSubmit} initialData={ticketData} showStatusField={true} submitText="Update" />}
     </div>
   );

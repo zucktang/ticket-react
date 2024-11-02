@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TicketForm from '../components/TicketForm';
 import { createTicket } from '../api/tickets';
@@ -17,6 +17,10 @@ const CreateTicketPage = () => {
             setError("There was an issue creating the ticket. Please try again.");
         }
     };
+
+    useEffect(() => {
+        document.title = "Create Ticket"; 
+      }, []);
 
     return (
         <div className="my-4">

@@ -20,6 +20,7 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    document.title = "Home"; 
     fetchTickets();
   }, []);
 
@@ -65,7 +66,7 @@ const HomePage = () => {
             active={activeTab === 'kanban'}
             className="px-4"
           >
-            Status
+            Kanban
           </Nav.Link>
         </Nav.Item>
       </Nav>
