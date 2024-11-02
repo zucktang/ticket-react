@@ -26,7 +26,7 @@ const CreateTicketPage = () => {
                     {error}
                 </Alert>
             )}
-            <TicketForm onSubmit={handleFormSubmit} showStatusField={false} />
+            <TicketForm onSubmit={handleFormSubmit} showStatusField={false} submitText="Create" />
         </div>
     );
 };

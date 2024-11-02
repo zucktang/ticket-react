@@ -37,7 +37,7 @@ const UpdateTicketPage = () => {
   return (
     <div className="my-4">
       <h4 className="text-center">Update Ticket</h4>
-      {ticketData && <TicketForm onSubmit={handleFormSubmit} initialData={ticketData} showStatusField={true} />}
+      {ticketData && <TicketForm onSubmit={handleFormSubmit} initialData={ticketData} showStatusField={true} submitText="Update" />}
     </div>
   );
 };

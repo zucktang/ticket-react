@@ -1,40 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { getTickets } from '../api/tickets';
+import React from 'react';
+import { Card, Badge, Row, Col } from 'react-bootstrap';
 
-const KanbanBoard = () => {
-    const [tickets, setTickets] = useState([]);
+const KanbanBoard = ({ tickets = [] }) => {
+  const statuses = [
+    { id: 'pending', title: 'Pending', textColor: 'text-warning' },
+    { id: 'accepted', title: 'Accepted', textColor: 'text-primary' },
+    { id: 'resolved', title: 'Resolved', textColor: 'text-success' },
+    { id: 'rejected', title: 'Rejected', textColor: 'text-danger' }
+  ];
 
-    useEffect(() => {
-        const fetchTickets = async () => {
-            const data = await getTickets();
-            console.log("Fetched Tickets in KanbanBoard:", data);
-            setTickets(data);
-        };
-        fetchTickets();
-    }, []);
+  const getTicketsByStatus = (status) => {
+    return tickets.filter(ticket => ticket.status === status);
+  };
 
-    const statuses = ['pending', 'accepted', 'resolved', 'rejected'];
-
-    return (
-        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-            {statuses.map(status => (
-                <div key={status} style={{ width: '25%' }}>
-                    <h2>{status.charAt(0).toUpperCase() + status.slice(1)}</h2>
-                    {tickets.filter(ticket => ticket.status === status).map(ticket => (
-                        <div key={ticket.id}>
-                            <h3>{ticket.title}</h3>
-                            <p>{ticket.description}</p>
-                        </div>
-                    ))}
+  return (
+    <Row className="g-3">
+      {statuses.map(status => (
+        <Col key={status.id} xs={12} md={6} lg={3}>
+          <Card className="shadow-sm h-100">
+            <Card.Header className="d-flex justify-content-between align-items-center bg-white">
+              <h6 className={`mb-0 ${status.textColor}`}>
+                {status.title}
+              </h6>
+              <Badge bg="secondary" className="rounded-pill">
+                {getTicketsByStatus(status.id).length}
+              </Badge>
+            </Card.Header>
+            <Card.Body className="p-2" style={{ minHeight: '500px' }}>
+              {getTicketsByStatus(status.id).map(ticket => (
+                <Card key={ticket.id} className="mb-2">
+                  <Card.Body className="p-3">
+                    <div className="d-flex justify-content-between align-items-start mb-2">
+                      <small className="text-muted">#{ticket.id}</small>
+                    </div>
+                    <h6 className="mb-2">{ticket.title}</h6>
+                    <p className="small text-muted mb-2">
+                      {ticket.description}
+                    </p>
+                    <div className="d-flex justify-content-between align-items-center border-top pt-2 mt-2">
+                      <small className="text-muted">
+                        last updated: {new Date(ticket.last_updated).toLocaleString()}
+                      </small>
+                    </div>
+                  </Card.Body>
+                </Card>
+              ))}
+              {getTicketsByStatus(status.id).length === 0 && (
+                <div className="text-center p-3 border border-dashed rounded">
+                  <small className="text-muted">No tickets</small>
                 </div>
-            ))}
-        </div>
-    );
-};
-
-KanbanBoard.propTypes = {
-    tickets: PropTypes.array
+              )}
+            </Card.Body>
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  );
 };
 
 export default KanbanBoard;

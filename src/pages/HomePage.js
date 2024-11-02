@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Card, Button, Row } from 'react-bootstrap';
-import TicketCard from '../components/TicketCard' 
+import { Container, Card, Button, Row, Nav } from 'react-bootstrap';
+import TicketCard from '../components/TicketCard';
 import { getTickets } from '../api/tickets';
 import { useNavigate } from 'react-router-dom';
+import KanbanBoard from '../components/KanbanBoard';
 
 const HomePage = () => {
   const [tickets, setTickets] = useState([]);
+  const [activeTab, setActiveTab] = useState('tickets');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        const data = await getTickets(); 
-        setTickets(data);
-      } catch (error) {
-        console.error('Error fetching tickets:', error);
-      }
-    };
+  const fetchTickets = async () => {
+    try {
+      const data = await getTickets();
+      setTickets(data);
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchTickets();
   }, []);
 
@@ -26,37 +28,78 @@ const HomePage = () => {
   };
 
   return (
-    <Container className="mt-4">
-      <Card className="text-center mb-4">
-        <Card.Body>
-          <Card.Title >Create a New Ticket</Card.Title>
-          <Card.Text>
+    <Container className="py-4">
+      <Card className="text-center mb-4 shadow-sm border-0">
+        <Card.Body className="py-4">
+          <Card.Title className="mb-3 fw-bold">Create a New Ticket</Card.Title>
+          <Card.Text className="text-muted">
             Click below to start creating a support ticket.
           </Card.Text>
-          <Button variant="primary" href="/create" style={{ backgroundColor: 'black', borderColor: 'black' }} >Create Ticket</Button>
+          <Button 
+            variant="dark" 
+            href="/create" 
+            className="px-4 py-2"
+          >
+            Create Ticket
+          </Button>
         </Card.Body>
       </Card>
 
-      <h2>Tickets</h2>
-      <Row>
-        {tickets.length > 0 ? (
-          tickets.map(ticket => (
-            <TicketCard
-            key={ticket.id}
-            ticket={ticket}
-            onClick={() => handleCardClick(ticket.id)}
-            />
-          ))
-        ) : (
-          <div className="col">
-            <Card>
-              <Card.Body>
-                <Card.Text>No tickets found.</Card.Text>
-              </Card.Body>
-            </Card>
-          </div>
-        )}
-      </Row>
+      <Nav 
+        variant="tabs" 
+        className="mb-4 border-bottom-0"
+        onSelect={(key) => setActiveTab(key)}
+      >
+        <Nav.Item>
+          <Nav.Link 
+            eventKey="tickets" 
+            active={activeTab === 'tickets'}
+            className="px-4"
+          >
+            List
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link 
+            eventKey="kanban" 
+            active={activeTab === 'kanban'}
+            className="px-4"
+          >
+            Status
+          </Nav.Link>
+        </Nav.Item>
+      </Nav>
+
+      {activeTab === 'tickets' && (
+        <Row>
+          {tickets.length > 0 ? (
+            tickets.map(ticket => (
+              <TicketCard
+                key={ticket.id}
+                ticket={ticket}
+                onClick={() => handleCardClick(ticket.id)}
+              />
+            ))
+          ) : (
+            <div className="col">
+              <Card className="border-0 shadow-sm">
+                <Card.Body className="text-center py-4">
+                  <Card.Text className="text-muted">No tickets found.</Card.Text>
+                </Card.Body>
+              </Card>
+            </div>
+          )}
+        </Row>
+      )}
+
+      {activeTab === 'kanban' && (
+        <KanbanBoard 
+        tickets={tickets} 
+        onTicketsRefresh={fetchTickets}
+        />
+        
+
+      )}
     </Container>
   );
 };
