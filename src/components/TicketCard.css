@@ -1,0 +1,23 @@
+.ticket-card {
+    background-color: #1c1c1c; 
+    color: #fff; 
+    border: none;
+    transition: transform 0.3s;
+    border-radius: 10px;
+}
+
+.ticket-card:hover {
+    transform: scale(1.05);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: calc(0.25rem - 1px);
+    border-top-right-radius: calc(0.25rem - 1px);
+}
+
+.card-footer {
+    background-color: transparent; /* Make footer background transparent */
+    border-top: none;
+}
